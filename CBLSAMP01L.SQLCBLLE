@@ -1,0 +1,50 @@
+       PROCESS NOMONOPRC.
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID.  CBLSAMP01L.
+
+      **************************************************************
+        ENVIRONMENT DIVISION.
+      **************************************************************
+        CONFIGURATION SECTION.
+        SPECIAL-NAMES.
+
+      **************************************************************
+        DATA DIVISION.
+      **************************************************************
+        WORKING-STORAGE SECTION.
+
+        77  WS-MESSAGE          PIC X(50).
+
+           exec sql
+             set option
+             commit = *NONE,
+             closqlcsr = *ENDMOD,
+             datfmt    = *ISO
+           end-exec.
+
+           exec sql
+             include sqlca
+           end-exec.
+           
+      **Incoming Parameters****************************************
+        LINKAGE SECTION.
+        01 INCOMING-VALUE1          PIC X(5).
+        01 OUTGOING-VALUE1          PIC X(50).
+
+      **************************************************************
+        PROCEDURE DIVISION USING INCOMING-VALUE1
+                                 OUTGOING-VALUE1.
+      **************************************************************
+        MAIN-LINE-SECTION.
+        MAIN-PROGRAM-LOGIC.
+
+           exec sql
+               select char(count(*))
+               into :WS-MESSAGE
+               from qiws.qcustcdt
+           end-exec.
+            move WS-MESSAGE to OUTGOING-VALUE1.
+
+      ****MOVE "SUCCESSFUL CALL TO CBL00000M_PGM1" TO OUTGOING-VALUE1
+
+            EXIT PROGRAM.
